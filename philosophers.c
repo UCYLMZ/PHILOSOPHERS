@@ -6,7 +6,7 @@
 /*   By: uyilmaz <uyilmaz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/16 18:16:23 by uyilmaz           #+#    #+#             */
-/*   Updated: 2023/07/16 20:48:03 by uyilmaz          ###   ########.fr       */
+/*   Updated: 2023/07/17 11:09:15 by uyilmaz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,10 @@ int	*check_values(int ac, char **arguments)
 		result[i] = ft_atoi(arguments[i]);
 		if (result[i] <= 0)
 		{
-			printf("Error: Arguments must be bigger then zero!\n");
+			printf("Error: Arguments must be positive integer!\n");
 			exit (3);
 		}
 	}
-	printf("#%d#\n", ac);
 	result[i] = 0;
 	return (result);
 }
@@ -78,6 +77,7 @@ int	main(int ac, char **av)
 	char	**arguments;
 	int		*values;
 	t_rules	*rules;
+	t_table	*table;
 
 	arguments = &av[1];
 	if (!check_arguments(ac, arguments))
@@ -87,10 +87,9 @@ int	main(int ac, char **av)
 	if (!rules)
 		return (2);
 	fill_the_rules(ac, &rules, values);
-	printf("argument count:%d\n", rules->argument_count);
-	printf("number of philosophers:%d\n", rules->number_of_philosophers);
-	printf("time to die:%d\n", rules->time_to_die);
-	printf("time to eat:%d\n", rules->time_to_eat);
-	printf("time to sleep:%d\n", rules->time_to_sleep);
-	printf("optional:%d\n", rules->number_of_times_each_philosophers_must_eat);
+	table = malloc(sizeof(t_table));
+	if (!table)
+		return (2);
+	table->rules = rules;
+	kick_starter(table);
 }

@@ -6,7 +6,7 @@
 /*   By: uyilmaz <uyilmaz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/16 16:51:17 by uyilmaz           #+#    #+#             */
-/*   Updated: 2023/07/16 19:46:12 by uyilmaz          ###   ########.fr       */
+/*   Updated: 2023/07/17 13:30:57 by uyilmaz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,25 @@ typedef struct s_rules
 	int	argument_count;
 }	t_rules;
 
+typedef struct s_philosopher
+{
+	int				philo_id;
+	pthread_t		philo;
+	pthread_mutex_t	left;
+	pthread_mutex_t	right;
+}	t_philosopher;
+
+typedef struct s_table
+{
+	t_rules			*rules;
+	pthread_t		*philos;
+	t_philosopher	**philosophers;
+	pthread_mutex_t	*mutexes;
+	int				philo_index;
+}	t_table;
+
 char	**ft_split(const char *s, char c);
 int		is_string_digit(char *str);
 int		ft_atoi(const char *str);
+void	kick_starter(t_table *table);
 #endif
