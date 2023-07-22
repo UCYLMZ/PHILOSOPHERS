@@ -6,7 +6,7 @@
 /*   By: uyilmaz <uyilmaz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/16 16:51:17 by uyilmaz           #+#    #+#             */
-/*   Updated: 2023/07/17 13:30:57 by uyilmaz          ###   ########.fr       */
+/*   Updated: 2023/07/22 04:21:02 by uyilmaz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@
 
 typedef struct s_rules
 {
-	int	number_of_philosophers;
-	int	time_to_die;
-	int	time_to_eat;
-	int	time_to_sleep;
-	int	number_of_times_each_philosophers_must_eat;
+	int	n_p;
+	int	die;
+	int	eat;
+	int	sleep;
+	int	must_eat;
 	int	argument_count;
 }	t_rules;
 
@@ -34,19 +34,21 @@ typedef struct s_philosopher
 	pthread_t		philo;
 	pthread_mutex_t	left;
 	pthread_mutex_t	right;
+	struct s_table	*table;
 }	t_philosopher;
 
 typedef struct s_table
 {
 	t_rules			*rules;
-	pthread_t		*philos;
-	t_philosopher	**philosophers;
+	t_philosopher	**p_t;
 	pthread_mutex_t	*mutexes;
 	int				philo_index;
+	long long		time;
 }	t_table;
 
-char	**ft_split(const char *s, char c);
-int		is_string_digit(char *str);
-int		ft_atoi(const char *str);
-void	kick_starter(t_table *table);
+char		**ft_split(const char *s, char c);
+int			is_string_digit(char *str);
+int			ft_atoi(const char *str);
+void		kick_starter(t_table *table);
+long long	get_time(void);
 #endif

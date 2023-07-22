@@ -6,7 +6,7 @@
 /*   By: uyilmaz <uyilmaz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/16 18:16:23 by uyilmaz           #+#    #+#             */
-/*   Updated: 2023/07/17 11:09:15 by uyilmaz          ###   ########.fr       */
+/*   Updated: 2023/07/22 04:15:37 by uyilmaz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,14 +62,14 @@ int	*check_values(int ac, char **arguments)
 void	fill_the_rules(int ac, t_rules **ruller, int *values)
 {
 	(*ruller)->argument_count = ac - 1;
-	(*ruller)->number_of_philosophers = values[0];
-	(*ruller)->time_to_die = values[1];
-	(*ruller)->time_to_eat = values[2];
-	(*ruller)->time_to_sleep = values[3];
+	(*ruller)->n_p = values[0];
+	(*ruller)->die = values[1];
+	(*ruller)->eat = values[2];
+	(*ruller)->sleep = values[3];
 	if (ac == 6)
-		(*ruller)->number_of_times_each_philosophers_must_eat = values[4];
+		(*ruller)->must_eat = values[4];
 	else
-		(*ruller)->number_of_times_each_philosophers_must_eat = -1;
+		(*ruller)->must_eat = -1;
 }
 
 int	main(int ac, char **av)
