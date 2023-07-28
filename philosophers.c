@@ -6,7 +6,7 @@
 /*   By: uyilmaz <uyilmaz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/16 18:16:23 by uyilmaz           #+#    #+#             */
-/*   Updated: 2023/07/22 04:15:37 by uyilmaz          ###   ########.fr       */
+/*   Updated: 2023/07/27 23:21:52 by uyilmaz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	*check_values(int ac, char **arguments)
 
 	result = malloc(sizeof(int) * (ac));
 	if (!result)
-		exit (2);
+		return (NULL);
 	i = -1;
 	while (++i < ac - 1) 
 	{
@@ -52,7 +52,8 @@ int	*check_values(int ac, char **arguments)
 		if (result[i] <= 0)
 		{
 			printf("Error: Arguments must be positive integer!\n");
-			exit (3);
+			free (result);
+			return (NULL);
 		}
 	}
 	result[i] = 0;
@@ -83,6 +84,8 @@ int	main(int ac, char **av)
 	if (!check_arguments(ac, arguments))
 		return (1);
 	values = check_values(ac, arguments);
+	if (!values)
+		return (1);
 	rules = malloc(sizeof(t_rules));
 	if (!rules)
 		return (2);
@@ -91,5 +94,5 @@ int	main(int ac, char **av)
 	if (!table)
 		return (2);
 	table->rules = rules;
-	kick_starter(table);
+	return (kick_starter(table));
 }

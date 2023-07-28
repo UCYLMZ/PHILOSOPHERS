@@ -5,94 +5,72 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: uyilmaz <uyilmaz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/17 10:55:55 by uyilmaz           #+#    #+#             */
-/*   Updated: 2023/07/22 04:23:50 by uyilmaz          ###   ########.fr       */
+/*   Created: 2023/07/27 17:06:20 by uyilmaz           #+#    #+#             */
+/*   Updated: 2023/07/28 04:31:40 by uyilmaz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	*routine(void *philosopher_void)
+int	control_over(t_table *table)
 {
+	int	i;
+
+	i = -1;
+	while (++i < table->rules->n_p)
+	{
+		if (table->philos[i]->eaten >= table->rules->must_eat)
+			return (0);
+		else if (table->philos[i]->last_meal + table->rules->die < get_time())
+		{
+			printf("%lld philosopher%d is died\n", get_time()
+				- table->time, table->philos[i]->philo_id);
+			return (0);
+		}
+	}
+	return (1);
+}
+
+void	*routine(void *philo_void)
+{
+	int				check;
 	t_philosopher	*philo;
 
-	philo = philosopher_void;
-	printf("philosopher%d has created.\n", philo->philo_id);
-	if ((philo->philo_id) % 2 == 0)
-		usleep(100);
-	pthread_mutex_lock(&philo->left);
-	printf("%lld philosopher%d has taken a fork!\n", get_time()
-		- philo->table->time, philo->philo_id);
-	pthread_mutex_lock(&philo->right);
-	printf("%lld philosopher%d has taken a fork!\n", get_time()
-		- philo->table->time, philo->philo_id);
-	eating(philo);
-	pthread_mutex_unlock(&philo->left);
-	pthread_mutex_unlock(&philo->right);
+	philo = philo_void;
+	while (control_over(philo->table))
+	{
+		pthread_mutex_lock(philo->left);
+		pthread_mutex_lock(philo->right);
+		eating(philo);
+		pthread_mutex_unlock(philo->left);
+		pthread_mutex_unlock(philo->right);
+		if (philo->table->dead_flag || philo->table->full_flag)
+			return (NULL);
+		printf("%lld philosopher%d is thinking\n", get_time()
+			- philo->table->time, philo->philo_id);
+	}
 	return (NULL);
 }
 
-void	mutex_initializer(t_table *table)
+int	kick_starter(t_table *table)
 {
 	int	i;
 
-	table->mutexes = malloc(sizeof(pthread_mutex_t)
-			* (table->rules->n_p));
-	if (!(table->mutexes))
-		exit(2);
-	i = -1;
-	while (++i < table->rules->n_p)
-		pthread_mutex_init(&((table->mutexes)[i]), NULL);
-}
-
-void	philosophers_initializer(t_table *table)
-{
-	int	i;
-
+	if (create_mutexes(table))
+		return (2);
+	table->philos = malloc(sizeof(t_philosopher *) * table->rules->n_p);
+	table->threads = malloc(sizeof(pthread_t) * table->rules->n_p);
 	i = -1;
 	while (++i < table->rules->n_p)
 	{
-		((table->p_t)[i])->philo_id = i + 1;
-		table->p_t[i]->table = table;
-		if (i == 0)
-		{
-			(table->p_t)[i]->left = table->mutexes[table->rules->n_p - 1];
-			(table->p_t)[i]->right = table->mutexes[0];
-		}
-		else if (i == table->rules->n_p - 1)
-		{
-			(table->p_t)[i]->left = table->mutexes[table->rules->n_p - 1];
-			(table->p_t)[i]->right = table->mutexes[0];
-		}
-		else
-		{
-			(table->p_t)[i]->left = table->mutexes[table->rules->n_p - 1];
-			(table->p_t)[i]->right = table->mutexes[i];
-		}
+		table->philos[i] = malloc(sizeof(t_philosopher));
+		if (!table->philos[i])
+			return (2);
 	}
-}
-
-void	kick_starter(t_table *table)
-{
-	int				i;
-
-	table->p_t = malloc(sizeof(t_philosopher *)
-			* (table->rules->n_p) + 1);
-	i = -1;
-	while (++i < table->rules->n_p)
-		table->p_t[i] = malloc(sizeof(t_philosopher));
-	table->p_t[i] = NULL;
-	table->p_t[0]->philo_id = 1;
-	if (!(table->p_t))
-		exit(2);
-	mutex_initializer(table);
-	philosophers_initializer(table);
-	i = -1;
-	table->time = get_time();
-	while (++i < table->rules->n_p)
-	{
-		table->philo_index = i;
-		pthread_create(&((table->p_t)[i]->philo),
-			NULL, &routine, table->p_t[i]);
-	}
+	if (!table->philos || !table->threads)
+		return (2);
+	table->dead_flag = 0;
+	table->full_flag = 0;
+	init_philos(table);
+	return (0);
 }

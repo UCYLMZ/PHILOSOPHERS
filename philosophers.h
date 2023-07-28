@@ -6,7 +6,7 @@
 /*   By: uyilmaz <uyilmaz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/16 16:51:17 by uyilmaz           #+#    #+#             */
-/*   Updated: 2023/07/22 04:21:02 by uyilmaz          ###   ########.fr       */
+/*   Updated: 2023/07/28 04:30:16 by uyilmaz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,24 +31,32 @@ typedef struct s_rules
 typedef struct s_philosopher
 {
 	int				philo_id;
+	int				eaten;
 	pthread_t		philo;
-	pthread_mutex_t	left;
-	pthread_mutex_t	right;
+	pthread_mutex_t	*left;
+	pthread_mutex_t	*right;
 	struct s_table	*table;
+	long long		last_meal;
 }	t_philosopher;
 
 typedef struct s_table
 {
 	t_rules			*rules;
-	t_philosopher	**p_t;
+	t_philosopher	**philos;
+	pthread_t		*threads;
 	pthread_mutex_t	*mutexes;
-	int				philo_index;
 	long long		time;
+	int				dead_flag;
+	int				full_flag;
 }	t_table;
 
-char		**ft_split(const char *s, char c);
 int			is_string_digit(char *str);
 int			ft_atoi(const char *str);
-void		kick_starter(t_table *table);
+int			kick_starter(t_table *table);
 long long	get_time(void);
+int			create_mutexes(t_table *table);
+void		init_philos(t_table *table);
+void		*routine(void *table_void);
+void		eating(t_philosopher *philo);
+void		sleeping(t_philosopher *philo);
 #endif
