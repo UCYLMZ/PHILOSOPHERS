@@ -6,7 +6,7 @@
 /*   By: uyilmaz <uyilmaz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 17:06:20 by uyilmaz           #+#    #+#             */
-/*   Updated: 2023/07/28 04:31:40 by uyilmaz          ###   ########.fr       */
+/*   Updated: 2023/07/30 01:21:54 by uyilmaz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,38 +16,39 @@ int	control_over(t_table *table)
 {
 	int	i;
 
+	pthread_mutex_lock(&table->control_lock);
 	i = -1;
 	while (++i < table->rules->n_p)
 	{
-		if (table->philos[i]->eaten >= table->rules->must_eat)
+		if (table->full_flag)
 			return (0);
-		else if (table->philos[i]->last_meal + table->rules->die < get_time())
+		else if (table->dead_flag)
 		{
-			printf("%lld philosopher%d is died\n", get_time()
-				- table->time, table->philos[i]->philo_id);
+			printer(table->philos[i], 4);
+			pthread_mutex_unlock(&table->control_lock);
 			return (0);
 		}
 	}
+	pthread_mutex_unlock(&table->control_lock);
 	return (1);
 }
 
 void	*routine(void *philo_void)
 {
 	int				check;
+	long long		local_time;
 	t_philosopher	*philo;
 
 	philo = philo_void;
 	while (control_over(philo->table))
 	{
-		pthread_mutex_lock(philo->left);
-		pthread_mutex_lock(philo->right);
 		eating(philo);
-		pthread_mutex_unlock(philo->left);
-		pthread_mutex_unlock(philo->right);
-		if (philo->table->dead_flag || philo->table->full_flag)
+		if (!control_over(philo->table))
 			return (NULL);
-		printf("%lld philosopher%d is thinking\n", get_time()
-			- philo->table->time, philo->philo_id);
+		sleeping(philo);
+		if (!control_over(philo->table))
+			return (NULL);
+		printer(philo, 3);
 	}
 	return (NULL);
 }

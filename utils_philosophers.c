@@ -6,7 +6,7 @@
 /*   By: uyilmaz <uyilmaz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 19:22:18 by uyilmaz           #+#    #+#             */
-/*   Updated: 2023/07/28 04:20:37 by uyilmaz          ###   ########.fr       */
+/*   Updated: 2023/07/29 21:15:48 by uyilmaz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,12 @@ int	create_mutexes(t_table *table)
 	i = -1;
 	while (++i < table->rules->n_p)
 		pthread_mutex_init(&(table->mutexes[i]), NULL);
+	pthread_mutex_init(&table->eat_lock, NULL);
+	pthread_mutex_init(&table->control_lock, NULL);
+	pthread_mutex_init(&table->print_mutex, NULL);
+	pthread_mutex_init(&table->sleep_mutex, NULL);
+	pthread_mutex_init(&table->time_mutex, NULL);
+	pthread_mutex_init(&table->loop_mutex, NULL);
 	return (0);
 }
 
@@ -36,11 +42,6 @@ void	fill_philos(t_table *table, int i)
 	{
 		table->philos[0]->right = &table->mutexes[0];
 		table->philos[0]->left = &table->mutexes[table->rules->n_p - 1];
-	}
-	else if (i == table->rules->n_p - 1)
-	{
-		table->philos[i]->right = &table->mutexes[i];
-		table->philos[i]->left = &table->mutexes[i - 1];
 	}
 	else
 	{
