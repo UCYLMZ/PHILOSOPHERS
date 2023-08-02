@@ -6,7 +6,7 @@
 /*   By: uyilmaz <uyilmaz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 19:22:18 by uyilmaz           #+#    #+#             */
-/*   Updated: 2023/07/29 21:15:48 by uyilmaz          ###   ########.fr       */
+/*   Updated: 2023/08/02 19:08:43 by uyilmaz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	create_mutexes(t_table *table)
 	pthread_mutex_init(&table->print_mutex, NULL);
 	pthread_mutex_init(&table->sleep_mutex, NULL);
 	pthread_mutex_init(&table->time_mutex, NULL);
-	pthread_mutex_init(&table->loop_mutex, NULL);
+	pthread_mutex_init(&table->table_mutex, NULL);
 	return (0);
 }
 
@@ -59,15 +59,16 @@ void	init_philos(t_table *table)
 		fill_philos(table, i);
 	table->time = get_time();
 	i = -1;
-	// while (++i < table->rules->n_p)
-	// {
-	// 	printf("id:%d left:%p right%p\nmutexes:%p\n", table->philos[i]->philo_id, table->philos[i]->left, table->philos[i]->right, &table->mutexes[i]);
-	// }
 	while (++i < table->rules->n_p)
 	{
 		pthread_create(&table->philos[i]->philo, 
 			NULL, &routine, table->philos[i]);
 		usleep(100);
+	}
+	while (1)
+	{
+		if (loop_control(table))
+			break ;
 	}
 	i = -1;
 	while (++i < table->rules->n_p)
