@@ -6,7 +6,7 @@
 /*   By: uyilmaz <uyilmaz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 19:22:18 by uyilmaz           #+#    #+#             */
-/*   Updated: 2023/08/02 19:08:43 by uyilmaz          ###   ########.fr       */
+/*   Updated: 2023/08/08 19:44:29 by uyilmaz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,11 @@ int	create_mutexes(t_table *table)
 	while (++i < table->rules->n_p)
 		pthread_mutex_init(&(table->mutexes[i]), NULL);
 	pthread_mutex_init(&table->eat_lock, NULL);
-	pthread_mutex_init(&table->control_lock, NULL);
-	pthread_mutex_init(&table->print_mutex, NULL);
-	pthread_mutex_init(&table->sleep_mutex, NULL);
+	pthread_mutex_init(&table->sleep_lock, NULL);
+	pthread_mutex_init(&table->die_lock, NULL);
+	pthread_mutex_init(&table->flag_lock, NULL);
 	pthread_mutex_init(&table->time_mutex, NULL);
-	pthread_mutex_init(&table->table_mutex, NULL);
+	pthread_mutex_init(&table->print_mutex, NULL);
 	return (0);
 }
 
@@ -67,7 +67,7 @@ void	init_philos(t_table *table)
 	}
 	while (1)
 	{
-		if (loop_control(table))
+		if (flag_control(table))
 			break ;
 	}
 	i = -1;
@@ -76,4 +76,27 @@ void	init_philos(t_table *table)
 	i = -1;
 	while (++i < table->rules->n_p)
 		pthread_mutex_destroy(&(table->mutexes[i]));
+}
+
+int	kick_starter(t_table *table)
+{
+	int	i;
+
+	if (create_mutexes(table))
+		return (2);
+	table->philos = malloc(sizeof(t_philosopher *) * table->rules->n_p);
+	table->threads = malloc(sizeof(pthread_t) * table->rules->n_p);
+	i = -1;
+	while (++i < table->rules->n_p)
+	{
+		table->philos[i] = malloc(sizeof(t_philosopher));
+		if (!table->philos[i])
+			return (2);
+	}
+	if (!table->philos || !table->threads)
+		return (2);
+	table->dead_flag = 0;
+	table->full_flag = 0;
+	init_philos(table);
+	return (0);
 }

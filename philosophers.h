@@ -6,7 +6,7 @@
 /*   By: uyilmaz <uyilmaz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/16 16:51:17 by uyilmaz           #+#    #+#             */
-/*   Updated: 2023/08/02 19:01:56 by uyilmaz          ###   ########.fr       */
+/*   Updated: 2023/08/09 12:51:09 by uyilmaz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,11 @@ typedef struct s_table
 	int				dead_flag;
 	int				full_flag;
 	pthread_mutex_t	eat_lock;
-	pthread_mutex_t	control_lock;
-	pthread_mutex_t	print_mutex;
-	pthread_mutex_t	sleep_mutex;
+	pthread_mutex_t	sleep_lock;
+	pthread_mutex_t	die_lock;
+	pthread_mutex_t	flag_lock;
 	pthread_mutex_t	time_mutex;
-	pthread_mutex_t	table_mutex;
+	pthread_mutex_t	print_mutex;
 }	t_table;
 
 int			is_string_digit(char *str);
@@ -67,9 +67,9 @@ int			create_mutexes(t_table *table);
 void		init_philos(t_table *table);
 void		*routine(void *table_void);
 int			eating(t_philosopher *philo);
-void		sleeping(t_philosopher *philo);
+int			sleeping(t_philosopher *philo);
 int			printer(t_philosopher *philo, char *status);
-void		eating_locker(t_philosopher *philo);
-void		*eating_unlocker(t_philosopher *philo);
-int			loop_control(t_table *table);
+int			flag_control(t_table *table);
+int			set_flags(t_table *table, int flag);
+int			is_it_alive(t_philosopher *philo);
 #endif

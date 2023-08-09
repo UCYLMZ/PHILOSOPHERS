@@ -6,7 +6,7 @@
 /*   By: uyilmaz <uyilmaz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 03:10:54 by uyilmaz           #+#    #+#             */
-/*   Updated: 2023/07/31 14:35:03 by uyilmaz          ###   ########.fr       */
+/*   Updated: 2023/08/09 12:58:05 by uyilmaz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,8 @@ void	pass_time(int time, t_philosopher *philo)
 {
 	long long	localtime;
 
-	pthread_mutex_lock(&philo->table->time_mutex);
 	localtime = get_time();
-	pthread_mutex_unlock(&philo->table->time_mutex);
-	while (control_over(philo->table))
+	while (!flag_control(philo->table) && is_it_alive(philo))
 	{
 		if (get_time() >= localtime + time)
 			break ;
