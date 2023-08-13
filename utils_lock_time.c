@@ -6,11 +6,25 @@
 /*   By: uyilmaz <uyilmaz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/31 13:56:00 by uyilmaz           #+#    #+#             */
-/*   Updated: 2023/08/09 12:51:13 by uyilmaz          ###   ########.fr       */
+/*   Updated: 2023/08/13 04:09:46 by uyilmaz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+void	eating_lock(t_philosopher *philo)
+{
+	pthread_mutex_lock(philo->left);
+	printer(philo, "has taken a fork");
+	pthread_mutex_lock(philo->right);
+	printer(philo, "has taken a fork");
+}
+
+void	eating_unlock(t_philosopher *philo)
+{
+	pthread_mutex_unlock(philo->left);
+	pthread_mutex_unlock(philo->right);
+}
 
 int	printer(t_philosopher *philo, char *status)
 {
@@ -39,4 +53,27 @@ int	printer(t_philosopher *philo, char *status)
 	}
 	pthread_mutex_unlock(&philo->table->print_mutex);
 	return (1);
+}
+
+long long	get_time(void)
+{
+	struct timeval	current_time;
+	long long		time;
+
+	gettimeofday(&current_time, NULL);
+	time = (current_time.tv_sec * 1000) + (current_time.tv_usec / 1000);
+	return (time);
+}
+
+void	pass_time(int time, t_philosopher *philo)
+{
+	long long	localtime;
+
+	localtime = get_time();
+	while (!flag_control(philo->table) && is_it_alive(philo))
+	{
+		if (get_time() >= localtime + time)
+			break ;
+		usleep(100);
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: uyilmaz <uyilmaz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 19:22:18 by uyilmaz           #+#    #+#             */
-/*   Updated: 2023/08/08 19:44:29 by uyilmaz          ###   ########.fr       */
+/*   Updated: 2023/08/13 04:03:35 by uyilmaz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void	fill_philos(t_table *table, int i)
 	table->philos[i]->philo_id = i + 1;
 	table->philos[i]->eaten = 0;
 	table->philos[i]->philo = table->threads[i];
+	pthread_mutex_init(&table->philos[i]->eaten_lock, NULL);
 	if (i == 0)
 	{
 		table->philos[0]->right = &table->mutexes[0];
@@ -67,15 +68,15 @@ void	init_philos(t_table *table)
 	}
 	while (1)
 	{
-		if (flag_control(table))
+		if (loop_control(table))
 			break ;
 	}
 	i = -1;
 	while (++i < table->rules->n_p)
-		pthread_join(table->philos[i]->philo, NULL);
+		pthread_mutex_destroy(&(table->mutexes[i]));
 	i = -1;
 	while (++i < table->rules->n_p)
-		pthread_mutex_destroy(&(table->mutexes[i]));
+		pthread_join(table->philos[i]->philo, NULL);
 }
 
 int	kick_starter(t_table *table)

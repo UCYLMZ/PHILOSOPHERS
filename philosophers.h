@@ -6,7 +6,7 @@
 /*   By: uyilmaz <uyilmaz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/16 16:51:17 by uyilmaz           #+#    #+#             */
-/*   Updated: 2023/08/09 12:51:09 by uyilmaz          ###   ########.fr       */
+/*   Updated: 2023/08/13 01:22:39 by uyilmaz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,11 @@ typedef struct s_philosopher
 	pthread_t		philo;
 	pthread_mutex_t	*left;
 	pthread_mutex_t	*right;
+	pthread_mutex_t	eaten_lock;
 	struct s_table	*table;
 	long long		last_meal;
 	int				philo_dead;
-	int				exit_flag;
+	int				full_flag;
 }	t_philosopher;
 
 typedef struct s_table
@@ -72,4 +73,7 @@ int			printer(t_philosopher *philo, char *status);
 int			flag_control(t_table *table);
 int			set_flags(t_table *table, int flag);
 int			is_it_alive(t_philosopher *philo);
+int			loop_control(t_table *table);
+void		eating_lock(t_philosopher *philo);
+void		eating_unlock(t_philosopher *philo);
 #endif
