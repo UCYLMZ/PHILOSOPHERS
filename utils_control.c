@@ -6,7 +6,7 @@
 /*   By: uyilmaz <uyilmaz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/02 18:58:11 by uyilmaz           #+#    #+#             */
-/*   Updated: 2023/08/13 03:58:34 by uyilmaz          ###   ########.fr       */
+/*   Updated: 2023/08/14 13:09:30 by uyilmaz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ int	loop_control(t_table *table)
 		if (!is_it_alive(table->philos[i]))
 		{
 			printer(table->philos[i], "died");
+			if (table->rules->n_p == 1)
+				pthread_mutex_unlock(&table->mutexes[0]);
 			return (1);
 		}
 		pthread_mutex_lock(&table->philos[i]->eaten_lock);

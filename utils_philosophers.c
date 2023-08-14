@@ -6,7 +6,7 @@
 /*   By: uyilmaz <uyilmaz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 19:22:18 by uyilmaz           #+#    #+#             */
-/*   Updated: 2023/08/13 04:03:35 by uyilmaz          ###   ########.fr       */
+/*   Updated: 2023/08/14 13:16:22 by uyilmaz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	init_philos(t_table *table)
 	{
 		pthread_create(&table->philos[i]->philo, 
 			NULL, &routine, table->philos[i]);
-		usleep(100);
+		usleep(60);
 	}
 	while (1)
 	{
