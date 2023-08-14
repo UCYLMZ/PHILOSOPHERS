@@ -6,7 +6,7 @@
 /*   By: uyilmaz <uyilmaz@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/31 13:56:00 by uyilmaz           #+#    #+#             */
-/*   Updated: 2023/08/14 13:06:24 by uyilmaz          ###   ########.fr       */
+/*   Updated: 2023/08/14 13:53:28 by uyilmaz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,6 @@ void	pass_time(int time, t_philosopher *philo)
 	{
 		if (get_time() >= localtime + time)
 			break ;
-		usleep(100);
+		usleep(60);
 	}
 }
