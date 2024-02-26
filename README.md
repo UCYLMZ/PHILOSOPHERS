@@ -1,1 +1,8 @@
-"Push Swap" is a project that aims to sort a set of integer values provided as arguments in as few moves as possible. For this sorting process, it maintains the numbers received as arguments in a stack (Stack A) and uses an auxiliary stack (Stack B) separately. To change the order of numbers in the stacks, it makes use of a set of operational moves available in many programming languages. These moves include: SA (swaps the positions of the first two elements in A), SB (swaps the positions of the first two elements in B), SS (applies SA and SB simultaneously), PA (pushes the first element from A to B), PB (pushes the first element from B to A), RA (shifts all elements in A one position up), RB (shifts all elements in B one position up), RR (applies RA and RB simultaneously), RRA (shifts elements in A one position down), RRB (shifts elements in B one position down), and RRR (applies RRA and RRB simultaneously). It applies the appropriate moves to ensure the numbers are sorted, with the final result in stack A, and writes the moves to the standard output.
+The purpose of the "Philosophers" project is to effectively learn the
+concept of multithreading using threads. Assigning a task to multiple
+threads will yield faster results. However, in scenarios where these
+threads are not used correctly, the results may not be accurate. In this
+project, one of the values taken as an argument specifies the number of
+philosophers, which determines the amount of threads opened. The
+goal is to ensure that the threads opened work correctly using Mutex
+and other auxiliary elements.
